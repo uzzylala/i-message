@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(cors({ origin: FRONTEND_URL, credentials: true }));
 app.use(clerkMiddleware());
 
-app.get("/", (req, res) => {
+app.get("/health", (req, res) => {
   res.json({ message: "Hello from the backend!", ok: true });
 });
 

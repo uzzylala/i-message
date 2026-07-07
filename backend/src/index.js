@@ -6,6 +6,7 @@ import cors from "cors";
 import fs from "fs";
 import path from "path";
 import job from "./lib/cron.js";
+import clerkRouter from "./webhooks/clerk.webhook.js";
 
 const app = express();
 
@@ -13,6 +14,12 @@ const FRONTEND_URL = process.env.FRONTEND_URL;
 const PORT = process.env.PORT || 5000;
 
 const publicDir = path.join(process.cwd(), "public");
+
+app.use(
+  "/api/webhooks/clerk",
+  express.raw({ type: "application/json" }),
+  clerkRouter,
+);
 
 app.use(express.json());
 app.use(cors({ origin: FRONTEND_URL, credentials: true }));

@@ -7,6 +7,7 @@ import fs from "fs";
 import path from "path";
 import job from "./lib/cron.js";
 import clerkRouter from "./webhooks/clerk.webhook.js";
+import authRouter from "./routes/auth.route.js";
 
 const app = express();
 
@@ -24,6 +25,8 @@ app.use(
 app.use(express.json());
 app.use(cors({ origin: FRONTEND_URL, credentials: true }));
 app.use(clerkMiddleware());
+
+app.use("/api/auth", authRouter);
 
 app.get("/health", (req, res) => {
   res.json({ message: "Hello from the backend!", ok: true });

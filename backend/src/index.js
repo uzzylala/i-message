@@ -6,10 +6,10 @@ import cors from "cors";
 import fs from "fs";
 import path from "path";
 import job from "./lib/cron.js";
-import clerkRouter from "./webhooks/clerk.webhook.js";
+import clerkWebhooks from "./webhooks/clerk.webhook.js";
 import authRouter from "./routes/auth.route.js";
-
-const app = express();
+import messageRouter from "./routes/message.route.js";
+import { app, server } from "./lib/socket.js";
 
 const FRONTEND_URL = process.env.FRONTEND_URL;
 const PORT = process.env.PORT || 5000;
@@ -19,7 +19,7 @@ const publicDir = path.join(process.cwd(), "public");
 app.use(
   "/api/webhooks/clerk",
   express.raw({ type: "application/json" }),
-  clerkRouter,
+  clerkWebhooks,
 );
 
 app.use(express.json());
@@ -27,6 +27,7 @@ app.use(cors({ origin: FRONTEND_URL, credentials: true }));
 app.use(clerkMiddleware());
 
 app.use("/api/auth", authRouter);
+app.use("/api/messages", messageRouter);
 
 app.get("/health", (req, res) => {
   res.json({ message: "Hello from the backend!", ok: true });
@@ -41,7 +42,7 @@ if (fs.existsSync(publicDir)) {
   });
 }
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   connectDb();
   console.log("Server is running on port", PORT);
 

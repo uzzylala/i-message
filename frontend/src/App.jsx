@@ -3,11 +3,12 @@ import { Navigate, Route, Routes } from "react-router";
 import { useAuth } from "@clerk/react";
 import ChatPage from "./pages/ChatPage";
 import AuthPage from "./pages/AuthPage";
+import PageLoader from "./components/PageLoader";
 
 function App() {
   const { isSignedIn, isLoaded } = useAuth();
-  if (isLoaded) {
-    return <div>Loading...</div>;
+  if (!isLoaded) {
+    return <PageLoader />;
   }
   return (
     <Routes>

@@ -1,6 +1,6 @@
 export const APP_NAME = "iMessage";
 
-export function AppLogo({ className = "", size = 32, alt = APP_NAME }) {
+export default function AppLogo({ className = "", size = 32, alt = APP_NAME }) {
   return (
     <img
       src="/logo.png"

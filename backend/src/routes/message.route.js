@@ -13,7 +13,7 @@ const messageRouter = express.Router();
 messageRouter.use(protectRoute);
 
 messageRouter.get("/users", getUsersForSidebar);
-messageRouter.get("/conversation", getConversationsForSidebar);
+messageRouter.get("/conversations", getConversationsForSidebar);
 messageRouter.get("/:id", getMessages);
 messageRouter.post("/send/:id", upload.single("media"), sendMessage);
 

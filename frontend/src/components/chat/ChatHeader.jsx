@@ -7,18 +7,25 @@ import { ThemePresetPicker } from "../ThemePresetPicker";
 import { ThemeToggle } from "../ThemeToggle";
 import { WallpaperPicker } from "../WallpaperPicker";
 
-import { useChatStore } from "../../store/useChatStore";
 import { useSelectedConversation } from "../../hooks/useSelectedConversation";
 import { AvatarWithOnlineIndicator } from "./AvatarWithOneIndicator";
+import { useChatStore } from "../../store/useChatStore";
+import { useAuthStore } from "../../store/useAuthStore";
 
 export function ChatHeader() {
+  const { activeConversation, isLargeScreen } = useSelectedConversation();
   const isSoundEnabled = useChatStore((state) => state.isSoundEnabled);
+
+  const onlineUsers = useAuthStore((state) => state.onlineUsers);
+
+  const isOnline = activeConversation?.peer?._id
+    ? onlineUsers.includes(activeConversation.peer._id)
+    : false;
+
   const setActiveConversationId = useChatStore(
     (state) => state.setActiveConversationId,
   );
   const setSoundEnabled = useChatStore((state) => state.setSoundEnabled);
-
-  const { activeConversation, isLargeScreen } = useSelectedConversation();
 
   return (
     <header className="sticky top-0 z-10 flex shrink-0 flex-wrap items-center gap-1 border-b border-border px-1.5 py-1.5 sm:gap-2 sm:px-2 sm:py-2">
@@ -36,9 +43,7 @@ export function ChatHeader() {
 
       {activeConversation ? (
         <>
-          <AvatarWithOnlineIndicator
-            isOnline={activeConversation.peer.isOnline ?? true}
-          >
+          <AvatarWithOnlineIndicator isOnline={isOnline}>
             <Avatar className="size-9 shrink-0">
               <Avatar.Image
                 alt={activeConversation.peer.name}
@@ -55,7 +60,8 @@ export function ChatHeader() {
               {activeConversation.peer.name}
             </p>
             <p className="truncate text-xs text-muted">
-              {activeConversation.peer.isOnline ? (
+              {/* 👈 5. USE THE NEW DYNAMIC IS_ONLINE BOOLEAN FOR THE SUBTEXT */}
+              {isOnline ? (
                 <span className="font-medium text-success">Online</span>
               ) : (
                 "Offline"
@@ -113,3 +119,30 @@ export function ChatHeader() {
     </header>
   );
 }
+
+//  <AvatarWithOnlineIndicator
+//     isOnline={activeConversation.peer.isOnline ?? true}
+//   >
+//     <Avatar className="size-9 shrink-0">
+//       <Avatar.Image
+//         alt={activeConversation.peer.name}
+//         src={activeConversation.peer.avatarUrl}
+//       />
+//       <Avatar.Fallback className="text-sm font-medium">
+//         {activeConversation.peer.initials}
+//       </Avatar.Fallback>
+//     </Avatar>
+//   </AvatarWithOnlineIndicator>
+
+//  <div className="flex-1 text-center sm:text-left">
+//             <p className="truncate text-[15px] font-semibold leading-tight">
+//               {activeConversation.peer.name}
+//             </p>
+//             <p className="truncate text-xs text-muted">
+//               {activeConversation.peer.isOnline ? (
+//                 <span className="font-medium text-success">Online</span>
+//               ) : (
+//                 "Offline"
+//               )}
+//             </p>
+//           </div>
